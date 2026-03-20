@@ -3,10 +3,15 @@
 # wird über Traefik im Cluster bereitgestellt 
 #
 # Installation:
-# helm repo add headlamp https://kubernetes-sigs.github.io/headlamp/
-# helm install my-headlamp headlamp/headlamp -f headlamp-values.yml
+#   helm repo add headlamp https://kubernetes-sigs.github.io/headlamp/
+#   helm install my-headlamp headlamp/headlamp --namespace kube-system -f headlamp-values.yml
+
 # Update 
-# helm upgrade my-headlamp headlamp/headlamp -f headlamp-values.yml
+#  helm upgrade my-headlamp headlamp/headlamp --namespace kube-system -f headlamp-values.yml
+
+# Create Auth Token 
+#   kubectl create token my-headlamp --namespace kube-system
+
 
 
 # Default values for headlamp.
