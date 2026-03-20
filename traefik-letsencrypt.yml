@@ -1,0 +1,18 @@
+
+# Aktiviert die Letsencrypt Unterstützung für Traefik 
+# in einem k3s cluster 
+
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    additionalArguments:
+      - "--certificatesresolvers.letsencrypt.acme.storage=/data/acme.json"
+      - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
+      - "--entryPoints.websecure.http.tls.certResolver=letsencrypt"
+    persistence:
+      enabled: true
+

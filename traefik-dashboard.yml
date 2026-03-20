@@ -1,0 +1,21 @@
+
+# Macht das Traefik Dashboard verfügbar
+# Achtung: Komplett ohne Authentifizierung 
+
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: dashboard
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`traefik.kaputtgpt.de`)
+      kind: Rule
+      services:
+        - name: api@internal
+          kind: TraefikService
+  tls:
+    secretName: traefik-tls
+    certResolver: "letsencrypt"
+

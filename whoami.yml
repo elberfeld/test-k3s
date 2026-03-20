@@ -1,0 +1,67 @@
+
+# Einfacher whoami Service
+# Ingress über treafik mit https 
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: whoami
+  labels:
+    app: whoami
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: whoami
+  template:
+    metadata:
+      labels:
+        app: whoami
+    spec:
+      containers:
+      - name: whoami
+        image: traefik/whoami:latest
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: whoami
+spec:
+  selector:
+    app: whoami
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: whoami
+  annotations:
+    # Traefik IngressClass (K3s Standard)
+    kubernetes.io/ingress.class: traefik
+    # HTTPS EntryPoint + Let's Encrypt
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+  tls:
+  - hosts:
+    - whoami.kaputtgpt.de
+    secretName: whoami-tls
+  rules:
+  - host: whoami.kaputtgpt.de
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: whoami
+            port:
+              number: 80
+
