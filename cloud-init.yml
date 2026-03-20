@@ -1,0 +1,36 @@
+#cloud-config
+
+packages:
+  - tmux
+  - htop
+  - vim-nox
+  - git
+  - git-lfs
+  - zstd
+  - 7zip
+  - rsync
+  - curl
+  - wget
+  - ca-certificates
+  - gnupg
+  - lftp
+package_update: true
+package_upgrade: true
+write_files:
+  - path: /etc/ssh/sshd_config.d/ssh-hardening.conf
+    content: |
+      PermitRootLogin prohibit-password
+      PasswordAuthentication no
+      KbdInteractiveAuthentication no
+      MaxAuthTries 2
+write_files:
+  - path: /etc/profile.d/kubeconfig.sh
+    content: |
+      KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+      export KUBECONFIG
+runcmd:
+  - curl -sfL https://get.k3s.io | sh -
+  - wget https://github.com/derailed/k9s/releases/download/v0.50.18/k9s_linux_amd64.deb
+  - dpkg -i k9s_linux_amd64.deb
+  - curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4 | bash
+
